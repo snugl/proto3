@@ -28,6 +28,11 @@ def kind(char):
         case ';':               return 'eos'
         case '\n':              return 'nl'
         case ' ':               return 'space'
+        
+        case '(':               return 'open_paran'
+        case ')':               return 'close_paran'
+
+        case _:                 return 'sym'
 
 
 
