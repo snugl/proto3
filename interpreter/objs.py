@@ -21,13 +21,15 @@ class _debug:
 
 @dataclass
 class _put:
-    lsh : expr.node
+    lhs : expr.node
     rhs : expr.node
 
     @classmethod
     def parse(cls, stream):
-        lsh = stream.pop() 
+        lhs = stream.pop() 
+        stream.expect('=')
         rhs = expr.parse(stream)
+        return cls(lhs, rhs)
 
 
 
