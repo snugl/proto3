@@ -8,6 +8,7 @@
         -push
         -pull
         -sub
+        -return
         -lab    /
         -jump   /
         -asm
@@ -20,6 +21,7 @@
 
     -string literals
     -dot operator
+
 
 
 
