@@ -42,9 +42,9 @@ class node:
                 var_addr = ctx.vars[self.content]
                 ctx.emit(f'load {var_addr}')
             case 'op' if self.left and self.right:
-                self.left.gen_read(ctx)
-                ctx.emit('push')
                 self.right.gen_read(ctx)
+                ctx.emit('push')
+                self.left.gen_read(ctx)
 
                 match self.content:
                     case '+': ctx.emit('add')
