@@ -18,6 +18,8 @@ class _debug:
         target = expr.parse(stream)
         return cls(target)
 
+    def __len__(self):
+        return len(self.target) + 1
     def generate(self, ctx):
         self.target.gen_read(ctx)
         ctx.emit('debug')
@@ -39,6 +41,8 @@ class _put:
     def infer(self, ctx):
         self.lhs.infer(ctx)
 
+    def __len__(self):
+        return len(self.rhs) + len(self.lhs)
     def generate(self, ctx):
         self.rhs.gen_read(ctx)
         self.lhs.gen_write(ctx)
@@ -57,6 +61,8 @@ class _lab:
     def resolve(self, ctx, index):
         ctx.labels[self.label] = index 
 
+    def __len__(self):
+        return 0
     def generate(self, ctx):
         pass #doesn't do anything
 
@@ -70,6 +76,8 @@ class _jump:
         label = stream.pop()
         return cls(label)
 
+    def __len__(self):
+        return len(self.target) + 1
     def generate(self, ctx):
         target_addr = ctx.labels[self.target]
         ctx.emit(f'jump {target_addr}')

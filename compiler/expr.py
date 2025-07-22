@@ -15,6 +15,15 @@ class node:
             ctx.alloc_var(self.content)
 
 
+    def __len__(self):
+        match self.kind:
+            case 'num': return 1
+            case 'var': return 1
+            case 'op' if self.left and self.right:
+                return len(self.right) + len(self.left) + 2
+
+
+
     #generate write from acc to expr
     def gen_write(self, ctx):
         match self.kind:
