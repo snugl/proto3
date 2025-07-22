@@ -10,12 +10,28 @@ class node:
     left  : 'node | None' = None
     right : 'node | None' = None
 
-    def write(self):
-        pass     
+    def write(self, ctx, val):
+        match self.kind:
+            case 'var':
+                ctx.vars[self.content] = val
 
+            case _:
+                error.error("Unable to write to expression!")
      
-    def eval(self):
-        pass
+    def eval(self, ctx) -> int:
+        match self.kind:
+            case 'num': return int(self.content)
+            case 'var': return ctx.vars[self.content]
+            case 'op' if self.left and self.right:
+                l = self.left.eval(ctx)
+                r = self.right.eval(ctx)
+
+                match self.content:
+                    case '+': return l + r
+                    case '-': return l - r
+                    case '*': return l * r
+
+        error.error("Internal fucking error, bitch!")
 
 
 

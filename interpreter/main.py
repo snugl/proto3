@@ -3,11 +3,16 @@
 import sys
 
 import lex
+import objs
+
+
 
 
 
 def compiler(path):
     stream = lex.tokenize(path)
+    root = objs.parse_prog(stream)
+    root.run()
 
 
 

@@ -17,6 +17,9 @@ class _debug:
         target = expr.parse(stream)
         return cls(target)
 
+    def eval(self, ctx):
+        print(self.target.eval(ctx))
+
 
 
 @dataclass
@@ -26,10 +29,14 @@ class _put:
 
     @classmethod
     def parse(cls, stream):
-        lhs = stream.pop() 
+        lhs = expr.parse(stream)
         stream.expect('=')
         rhs = expr.parse(stream)
         return cls(lhs, rhs)
+
+    def eval(self, ctx):
+        val = self.rhs.eval(ctx)
+        self.lhs.write(ctx, val)
 
 
 
@@ -52,6 +59,15 @@ def parse_statement(stream):
 @dataclass
 class prog:
     statements : typing.Any = field(default_factory=lambda: [])
+
+    vars  : dict[str, int] = field(default_factory=lambda: {})
+    const : dict[str, int] = field(default_factory=lambda: {})
+
+    def run(self):
+
+        for x in self.statements:
+            x.eval(self)
+
 
 
 def parse_prog(stream):
