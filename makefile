@@ -1,6 +1,6 @@
-
+TARGET = prg/fib.snug
 .PHONY: run
 
 run:
-	./interpreter/main.py prg/main.snug
+	./interpreter/main.py $(TARGET)
 

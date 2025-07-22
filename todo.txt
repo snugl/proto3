@@ -8,16 +8,14 @@
         -push
         -pull
         -sub
-        -lab
-        -jump
+        -lab    /
+        -jump   /
         -asm
         -use
         -static
 
 
         (compile-time)
-        -seq
-        -iota
         -const
 
     -string literals
