@@ -1,0 +1,30 @@
+
+
+
+-features
+    -statments
+        -put
+        -push
+        -pull
+        -sub
+        -lab
+        -jump
+        -sub
+        -asm
+        -use
+        -static
+
+        -debug
+
+        (compile-time)
+        -seq
+        -iota
+        -const
+
+    -string literals
+    -dot operator
+
+
+
+
+
