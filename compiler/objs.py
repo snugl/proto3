@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from dataclasses import field
 import typing
+import itertools
 
 
 import expr
@@ -17,8 +18,9 @@ class _debug:
         target = expr.parse(stream)
         return cls(target)
 
-    def eval(self, ctx):
-        print(self.target.eval(ctx))
+    def generate(self, ctx):
+        self.target.gen_read(ctx)
+        ctx.emit('debug')
 
 
 
@@ -34,9 +36,13 @@ class _put:
         rhs = expr.parse(stream)
         return cls(lhs, rhs)
 
-    def eval(self, ctx):
-        val = self.rhs.eval(ctx)
-        self.lhs.write(ctx, val)
+    def infer(self, ctx):
+        self.lhs.infer(ctx)
+
+    def generate(self, ctx):
+        self.rhs.gen_read(ctx)
+        self.lhs.gen_write(ctx)
+
 
 
 @dataclass
@@ -48,10 +54,10 @@ class _lab:
         label = stream.pop()
         return cls(label)
 
-    def process(self, ctx, index):
+    def resolve(self, ctx, index):
         ctx.labels[self.label] = index 
 
-    def eval(self, ctx):
+    def generate(self, ctx):
         pass #doesn't do anything
 
 
@@ -64,8 +70,10 @@ class _jump:
         label = stream.pop()
         return cls(label)
 
-    def eval(self, ctx):
-        ctx.ip = ctx.labels[self.target]
+    def generate(self, ctx):
+        target_addr = ctx.labels[self.target]
+        ctx.emit(f'jump {target_addr}')
+
 
 
 def parse_statement(stream):
@@ -85,28 +93,42 @@ def parse_statement(stream):
 
 @dataclass
 class prog:
-    statements : typing.Any = field(default_factory=lambda: [])
+    statements : typing.Any     = field(default_factory=lambda: [])
+    const      : dict[str, int] = field(default_factory=lambda: {})
+    labels     : dict[str, int] = field(default_factory=lambda: {})
 
-    vars  : dict[str, int] = field(default_factory=lambda: {})
-    const : dict[str, int] = field(default_factory=lambda: {})
+    vars        : dict[str, int]  = field(default_factory=lambda: {})
+    var_allocer : typing.Iterator = field(default_factory=lambda: itertools.count(0))
 
-    labels : dict[str, int] = field(default_factory=lambda: {})
+    emit_buffer : list[str] = field(default_factory=lambda: [])
 
-    ip : int = 0
+    def emit(self, output):
+        self.emit_buffer.append(output)
 
-    def process(self):
+    def alloc_var(self, name):
+        if name not in self.vars:
+            self.vars[name] = next(self.var_allocer)
+
+    def resolve_labels(self):
         for index, stat in enumerate(self.statements):
-            if hasattr(stat, 'process'):
-                stat.process(self, index) 
+            if type(stat) is _lab:
+                stat.resolve(self, index) 
+
+    def infer_variables(self):
+        for stat in self.statements:
+            if type(stat) is _put:
+                stat.infer(self)
 
 
-    def run(self):
-        while self.ip < len(self.statements):
-            obj = self.statements[self.ip]
-            self.ip += 1
-            obj.eval(self)
+    def generate(self):
+        for stat in self.statements:
+            stat.generate(self)
 
+    def render(self):
+        return "\n".join(self.emit_buffer)
 
+    def write(self, path):
+        pass
 
 def parse_prog(stream):
     root = prog()

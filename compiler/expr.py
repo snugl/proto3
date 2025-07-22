@@ -10,6 +10,11 @@ class node:
     left  : 'node | None' = None
     right : 'node | None' = None
 
+    def infer(self, ctx):
+        if self.kind == 'var':
+            ctx.alloc_var(self.content)
+
+
     #generate write from acc to expr
     def gen_write(self, ctx):
         match self.kind:
