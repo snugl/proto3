@@ -1,8 +1,8 @@
 TARGET = prg/fib.snug
 
-run: build
+run: compile
 
 
-build: $(TARGET)
+compile: $(TARGET)
 	./compiler/main.py $(TARGET)
 
