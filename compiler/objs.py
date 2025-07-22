@@ -118,9 +118,12 @@ class prog:
             self.vars[name] = next(self.var_allocer)
 
     def resolve_labels(self):
-        for index, stat in enumerate(self.statements):
+        index = 0
+        for stat in self.statements:
             if type(stat) is _lab:
                 stat.resolve(self, index) 
+
+            index += len(stat)
 
     def infer_variables(self):
         for stat in self.statements:
