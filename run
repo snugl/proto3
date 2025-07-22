@@ -1,0 +1,2 @@
+#!/bin/bash
+./interpreter/main.py $1
