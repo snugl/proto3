@@ -10,28 +10,38 @@ class node:
     left  : 'node | None' = None
     right : 'node | None' = None
 
-    def write(self, ctx, val):
+    #generate write from acc to expr
+    def gen_write(self, ctx):
         match self.kind:
             case 'var':
-                ctx.vars[self.content] = val
+                var_addr = ctx.vars[self.content]
+                ctx.emit(f'store {var_addr}')
 
             case _:
                 error.error("Unable to write to expression!")
      
-    def eval(self, ctx) -> int:
+    #generate read from expr to acc
+    def gen_read(self, ctx):
         match self.kind:
-            case 'num': return int(self.content)
-            case 'var': return ctx.vars[self.content]
+            case 'num': ctx.emit(f'const {self.content}')
+            case 'var': 
+                var_addr = ctx.vars[self.content]
+                ctx.emit(f'load {var_addr}')
             case 'op' if self.left and self.right:
-                l = self.left.eval(ctx)
-                r = self.right.eval(ctx)
+                self.left.gen_read(ctx)
+                ctx.emit('push')
+                self.right.gen_read(ctx)
 
                 match self.content:
-                    case '+': return l + r
-                    case '-': return l - r
-                    case '*': return l * r
+                    case '+': ctx.emit('add')
+                    case '-': ctx.emit('sub')
+                    case '*': ctx.emit('mul')
 
-        error.error("Internal fucking error, bitch!")
+                    case _:
+                        error.error("Internal fucking error, bitch!")
+
+            case _:
+                error.error("Internal fucking error, bitch!")
 
 
 
