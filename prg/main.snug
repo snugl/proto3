@@ -1,10 +1,13 @@
 
 
 
-put a = 10;
-put b = 20;
+put a = 3;
+put b = 5;
 put c = (a + b - 2) * 3;
-debug c;
+push c;
+
+pull d;
+debug d;
 
 
 

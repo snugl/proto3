@@ -5,12 +5,17 @@
     -statments
         -debug  /
         -put    /
-        -push
-        -pull
+        -push   /
+        -pull   /
         -sub
+        -sub ~
         -return
+        -dup
+        -swap
+        -drop
         -lab    /
         -jump   /
+        -jump ~
         -asm
         -use
         -static

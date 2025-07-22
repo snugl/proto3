@@ -1,4 +1,4 @@
-TARGET = prg/fib.snug
+TARGET = prg/main.snug
 
 run: compile
 	./vm.py build
