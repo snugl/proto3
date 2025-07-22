@@ -67,7 +67,7 @@ class _lab:
         pass #doesn't do anything
 
 
-@dataclass()
+@dataclass
 class _jump:
     target : str
 
@@ -81,6 +81,38 @@ class _jump:
     def generate(self, ctx):
         target_addr = ctx.labels[self.target]
         ctx.emit(f'jump {target_addr}')
+
+
+@dataclass
+class _push:
+    target : expr.node
+
+    @classmethod
+    def parse(cls, stream):
+        return cls(expr.parse(stream))
+
+    def __len__(self):
+        return len(self.target) + 1
+    def generate(self, ctx):
+        self.target.gen_read(ctx)
+        ctx.emit('push')
+
+@dataclass
+class _pull:
+    target : expr.node
+
+    @classmethod
+    def parse(cls, stream):
+        return cls(expr.parse(stream))
+
+    def infer(self, ctx):
+        self.target.infer(ctx)
+
+    def __len__(self):
+        return len(self.target) + 1
+    def generate(self, ctx):
+        ctx.emit('pull')
+        self.target.gen_write(ctx)
 
 
 
@@ -127,7 +159,8 @@ class prog:
 
     def infer_variables(self):
         for stat in self.statements:
-            if type(stat) is _put:
+            if type(stat) is _put or \
+               type(stat) is _pull:
                 stat.infer(self)
 
 
