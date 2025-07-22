@@ -1,7 +1,10 @@
 
 
 
-debug 10;
+put a = 10;
+put b = 20;
+put c = (a + b - 2) * 3;
+debug c;
 
 
 
