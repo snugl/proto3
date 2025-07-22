@@ -135,11 +135,14 @@ class prog:
         for stat in self.statements:
             stat.generate(self)
 
+        self.emit('halt')
+
     def render(self):
         return "\n".join(self.emit_buffer)
 
     def write(self, path):
-        pass
+        with open(path, 'w') as f:
+            f.write(self.render())
 
 def parse_prog(stream):
     root = prog()

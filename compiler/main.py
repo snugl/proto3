@@ -17,6 +17,7 @@ def compiler(path):
     prog.infer_variables()
     prog.generate()
 
+    prog.write('build')
     print(prog.render())
 
 
