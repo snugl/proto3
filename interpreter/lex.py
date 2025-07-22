@@ -1,4 +1,21 @@
 
+from dataclasses import dataclass
+
+import error
+
+
+@dataclass
+class streamer:
+    container : list[str]
+
+    def pop(self):
+        return self.container.pop(0)
+
+    def expect(self, content):
+        token = self.pop()
+        if token != content:
+            error.error(f"Expected '{content}' but got '{token}'")
+
 
 
 
@@ -33,7 +50,7 @@ def tokenize(path):
         buffer.append(char)
 
 
-    print(stream)
+    return streamer(stream)
 
 
 
