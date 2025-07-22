@@ -52,28 +52,23 @@ def parse_higher(stream, prec_level) -> node:
         return parse_terminal(stream)
 
 def parse_terminal(stream) -> node:
-    match stream.pop_raw():
-        case x if x.content == '(' and x.kind == 'open_paran':
+    match stream.pop():
+        case '(':
             expr = parse_expr(stream, 0)
             stream.expect(")")
             return expr
-        case x if x.kind == 'numb':
+        case x if x.isdigit():
             return node(
                 kind = 'num',
-                content = int(x.content)
+                content = int(x)
             )
-        case x if x.kind == 'iden':
+        case x if x.isalpha():
             return node(
                 kind = 'var',
-                content = x.content
-            )
-        case x if x.kind == 'quote':
-            return node(
-                kind = 'string',
-                content = x.content
+                content = x
             )
         case x:
-            error.error(f"Unable to parse terminal '{x}' of type {x.kind}")
+            error.error(f"Unable to parse terminal '{x}'")
 
 
 def parse(stream) -> node:
