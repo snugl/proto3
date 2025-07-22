@@ -39,6 +39,33 @@ class _put:
         self.lhs.write(ctx, val)
 
 
+@dataclass
+class _lab:
+    label : str
+
+    @classmethod
+    def parse(cls, stream):
+        label = stream.pop()
+        return cls(label)
+
+    def process(self, ctx, index):
+        ctx.labels[self.label] = index 
+
+    def eval(self, ctx):
+        pass #doesn't do anything
+
+
+@dataclass()
+class _jump:
+    target : str
+
+    @classmethod
+    def parse(cls, stream):
+        label = stream.pop()
+        return cls(label)
+
+    def eval(self, ctx):
+        ctx.ip = ctx.labels[self.target]
 
 
 def parse_statement(stream):
@@ -63,10 +90,21 @@ class prog:
     vars  : dict[str, int] = field(default_factory=lambda: {})
     const : dict[str, int] = field(default_factory=lambda: {})
 
-    def run(self):
+    labels : dict[str, int] = field(default_factory=lambda: {})
 
-        for x in self.statements:
-            x.eval(self)
+    ip : int = 0
+
+    def process(self):
+        for index, stat in enumerate(self.statements):
+            if hasattr(stat, 'process'):
+                stat.process(self, index) 
+
+
+    def run(self):
+        while self.ip < len(self.statements):
+            obj = self.statements[self.ip]
+            self.ip += 1
+            obj.eval(self)
 
 
 
