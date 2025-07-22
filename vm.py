@@ -44,6 +44,8 @@ def run(prog):
 
             #arithmetic
             case 'add': acc += stack.pop()
+            case 'sub': acc -= stack.pop()
+            case 'mul': acc *= stack.pop()
 
             #data stack
             case 'push':  stack.append(acc)
