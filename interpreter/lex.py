@@ -11,10 +11,16 @@ class streamer:
     def pop(self):
         return self.container.pop(0)
 
+    def peek(self):
+        return self.container[0]
+
     def expect(self, content):
         token = self.pop()
         if token != content:
             error.error(f"Expected '{content}' but got '{token}'")
+
+    def has(self):
+        return len(self.container) > 0
 
 
 
