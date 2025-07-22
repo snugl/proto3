@@ -35,7 +35,7 @@ def parse_expr(stream, prec_level) -> node:
         return left
 
     op = stream.pop()
-    right = parse_higher(stream, prec_level)
+    right = parse_expr(stream, prec_level)
     return node(
         kind = 'op',
         content = op,
