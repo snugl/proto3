@@ -57,6 +57,10 @@ def run(prog):
 
             #flow
             case 'jump': ip = arg
+            case 'call':
+                stack.append(ip)
+                ip = arg
+            case 'return': ip = stack.pop()
 
             #misc
             case 'debug': print(acc)
