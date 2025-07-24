@@ -77,11 +77,34 @@ class _jump:
         return cls(label)
 
     def __len__(self):
-        return len(self.target) + 1
+        return 1
     def generate(self, ctx):
         target_addr = ctx.labels[self.target]
         ctx.emit(f'jump {target_addr}')
 
+@dataclass
+class _sub:
+    target : str
+
+    @classmethod
+    def parse(cls, stream):
+        return cls(stream.pop())
+
+    def __len__(self):
+        return 1
+    def generate(self, ctx):
+        target_addr = ctx.labels[self.target]
+        ctx.emit(f'call {target_addr}')
+
+@dataclass
+class _return:
+    @classmethod
+    def parse(cls, stream):
+        return cls()
+    def __len__(self):
+        return 1
+    def generate(self, ctx):
+        ctx.emit('return')
 
 @dataclass
 class _push:
