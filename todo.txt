@@ -7,12 +7,9 @@
         -put    /
         -push   /
         -pull   /
-        -sub
+        -sub    /
         -sub ~
-        -return
-        -dup
-        -swap
-        -drop
+        -return /
         -lab    /
         -jump   /
         -jump ~
