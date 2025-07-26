@@ -138,6 +138,25 @@ class _pull:
         self.target.gen_write(ctx)
 
 
+class _swap:
+    @classmethod
+    def parse(cls, stream):
+        return cls()
+    def __len__(self):
+        return 8
+    def generate(self, ctx):
+        #read
+        ctx.emit('pull')
+        ctx.emit(f'store {ctx.tmp_fst_addr}')
+        ctx.emit('pull')
+        ctx.emit(f'store {ctx.tmp_snd_addr}')
+
+        #write
+        ctx.emit(f'load {ctx.tmp_fst_addr}')
+        ctx.emit('push')
+        ctx.emit(f'load {ctx.tmp_snd_addr}')
+        ctx.emit('push')
+
 
 def parse_statement(stream):
     iden = stream.pop()
@@ -161,16 +180,21 @@ class prog:
     labels     : dict[str, int] = field(default_factory=lambda: {})
 
     vars        : dict[str, int]  = field(default_factory=lambda: {})
-    var_allocer : typing.Iterator = field(default_factory=lambda: itertools.count(0))
+    mem_allocer : typing.Iterator = field(default_factory=lambda: itertools.count(2))
 
     emit_buffer : list[str] = field(default_factory=lambda: [])
+
+    
+    #symmetric address pair for temporary offloading
+    tmp_fst_addr : int = 0
+    tmp_snd_addr : int = 1
 
     def emit(self, output):
         self.emit_buffer.append(output)
 
     def alloc_var(self, name):
         if name not in self.vars:
-            self.vars[name] = next(self.var_allocer)
+            self.vars[name] = next(self.mem_allocer)
 
     def resolve_labels(self):
         index = 0
