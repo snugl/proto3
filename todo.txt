@@ -17,6 +17,10 @@
         -use
         -static
 
+        -swap   /
+        -dup    /
+        -drop   /
+
 
         (compile-time)
         -const
