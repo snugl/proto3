@@ -157,6 +157,26 @@ class _swap:
         ctx.emit(f'load {ctx.tmp_snd_addr}')
         ctx.emit('push')
 
+class _dup:
+    @classmethod
+    def parse(cls, stream):
+        return cls()
+    def __len__(self):
+        return 3
+    def generate(self, ctx):
+        ctx.emit('pull')
+        ctx.emit('push')
+        ctx.emit('push')
+
+class _drop:
+    @classmethod
+    def parse(cls, stream):
+        return cls()
+    def __len__(self):
+        return 1
+    def generate(self, ctx):
+        ctx.emit('pull')
+
 
 def parse_statement(stream):
     iden = stream.pop()
