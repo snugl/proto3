@@ -1,0 +1,17 @@
+
+jump main;
+
+
+lab loop;
+    debug 10;
+    debug 20;
+    return;
+
+
+
+lab main;
+sub loop;
+sub loop;
+
+
+
